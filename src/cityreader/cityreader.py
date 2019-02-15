@@ -92,12 +92,8 @@ def normalize(lat1, lon1, lat2, lon2):
 
 
 def between(city, lat1, lon1, lat2, lon2):
-    if (city.name == 'Albuquerque'):
-        print(city)
-        print(lat1, lon1, lat2, lon2)
     vertical_check = city.lat <= lat1 and city.lat >= lat2
     horizontal_check = city.lon >= lon1 and city.lon <= lon2
-    print(vertical_check, horizontal_check)
     return vertical_check and horizontal_check
 
 
