@@ -1,4 +1,5 @@
 import csv
+import sys
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, latitude, and longitude.
 
@@ -46,9 +47,6 @@ def cityreader(cities=[]):
 
 cityreader(cities)
 
-# Print the list of cities (name, lat, lon), 1 record per line.
-for c in cities:
-    print(c)
 
 # STRETCH GOAL!
 #
@@ -79,15 +77,56 @@ for c in cities:
 # Tucson: (32.1558,-110.8777)
 # Salt Lake City: (40.7774,-111.9301)
 
-# TODO Get latitude and longitude values from the user
+def normalize(lat1, lon1, lat2, lon2):
+    # check if lat1 is south of lat2
+    if lat1 < lat2:
+        # first point is south of second point, swap position
+        lat1, lat2 = lat2, lat1
+        lon1, lon2 = lon2, lon1
+
+    if lon1 > lon2:
+        # first point is SW of second point, so to normalize, swap longitudes:
+        lon1, lon2 = lon2, lon1
+
+    return (lat1, lon1, lat2, lon2)
+
+
+def between(city, lat1, lon1, lat2, lon2):
+    if (city.name == 'Albuquerque'):
+        print(city)
+        print(lat1, lon1, lat2, lon2)
+    vertical_check = city.lat <= lat1 and city.lat >= lat2
+    horizontal_check = city.lon >= lon1 and city.lon <= lon2
+    print(vertical_check, horizontal_check)
+    return vertical_check and horizontal_check
 
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
-    within = []
-
     # TODO Ensure that the lat and lon valuse are all floats
     # Go through each city and check to see if it falls within
     # the specified coordinates.
+    try:
+        lat1, lon1, lat2, lon2 = [float(val)
+                                  for val in [lat1, lon1, lat2, lon2]]
+    except ValueError:
+        print('Arguments passed must be parsable lat/lon float values')
 
+    lat1, lon1, lat2, lon2 = normalize(lat1, lon1, lat2, lon2)
+
+    within = [city for city in cities if between(city, lat1, lon1, lat2, lon2)]
     return within
+
+
+# TODO Get latitude and longitude values from the user
+arg_len = len(sys.argv)
+
+if arg_len == 5:
+    lat1, lon1, lat2, lon2 = sys.argv[1:5]
+    answer = cityreader_stretch(lat1, lon1, lat2, lon2, cities)
+    for city in answer:
+        print(city)
+
+else:
+    # Print the list of cities (name, lat, lon), 1 record per line.
+    for c in cities:
+        print(c)
