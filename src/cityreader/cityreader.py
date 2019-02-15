@@ -30,19 +30,17 @@ cities = []
 
 
 def cityreader(cities=[]):
-  # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the
-  # `cities` list
-    with open('cities.csv', newline='') as citiesFile:
-        reader = csv.DictReader(citiesFile)
-        # next(reader)
-        for city in reader:
-            name = city['city']
-            lat = city['lat']
-            lon = city['lng']
-            cities.append(
-                City(name=name, lat=lat, lon=lon))
-    return cities
+    """reads from the 'cities.csv' file. For each city record, create a new City instance and add it to the `cities` list"""
+       with open('cities.csv', newline='') as citiesFile:
+            reader = csv.DictReader(citiesFile)
+            # next(reader)
+            for city in reader:
+                name = city['city']
+                lat = city['lat']
+                lon = city['lng']
+                cities.append(
+                    City(name=name, lat=lat, lon=lon))
+        return cities
 
 
 cityreader(cities)
@@ -78,9 +76,12 @@ cityreader(cities)
 # Salt Lake City: (40.7774,-111.9301)
 
 def normalize(lat1, lon1, lat2, lon2):
+    """takes in (lat1, lon1) and (lat2, lon2) representing two coordinates creating a square.
+    It normalizes these by making lat1, lon1 represent the NW corner of the square, and lat2 and
+    lon2 represent the SE corner."""
     # check if lat1 is south of lat2
     if lat1 < lat2:
-        # first point is south of second point, swap position
+            # first point is south of second point, swap position
         lat1, lat2 = lat2, lat1
         lon1, lon2 = lon2, lon1
 
@@ -92,15 +93,14 @@ def normalize(lat1, lon1, lat2, lon2):
 
 
 def between(city, lat1, lon1, lat2, lon2):
+    """determines if a given city object is between the square creates by
+    (lat1, lon1) and (lat2, lon2)"""
     vertical_check = city.lat <= lat1 and city.lat >= lat2
     horizontal_check = city.lon >= lon1 and city.lon <= lon2
     return vertical_check and horizontal_check
 
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-    # TODO Ensure that the lat and lon valuse are all floats
-    # Go through each city and check to see if it falls within
-    # the specified coordinates.
     try:
         lat1, lon1, lat2, lon2 = [float(val)
                                   for val in [lat1, lon1, lat2, lon2]]
@@ -113,9 +113,8 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
     return within
 
 
-# TODO Get latitude and longitude values from the user
+# program behaves differently if passed four arguments representing coords
 arg_len = len(sys.argv)
-
 if arg_len == 5:
     lat1, lon1, lat2, lon2 = sys.argv[1:5]
     answer = cityreader_stretch(lat1, lon1, lat2, lon2, cities)
@@ -123,6 +122,5 @@ if arg_len == 5:
         print(city)
 
 else:
-    # Print the list of cities (name, lat, lon), 1 record per line.
     for c in cities:
         print(c)
